@@ -9,15 +9,15 @@ export const Wrapper = styled("div", {
   display: "flex",
   justifyContent: "space-between",
   variants: {
-    resizeIsActive: {
+    active: {
       true: {
-        cursor: "col-resize"
+        cursor: "col-resize !important"
       }
     }
   }
 });
 
-export const Box = styled("div", {
+export const ResizablePanelStyle = styled("div", {
   position: "relative",
   height: "90%",
   width: "100%",
