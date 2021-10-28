@@ -1,9 +1,22 @@
 # react-resizable-panels
 
-Sandbox for testing resizable panels, handled by a side drag handle.
+Simple resizable panels, handled by a drag handle. Bring-your-own-UI.
 
-Supports:
+## Features:
 
-- multiple panels
+- Headless UI
+- Support for multiple panels
 - min width constraints
-- resizable x axis
+- Resizable x axis
+
+## To-Do:
+
+- [ ] TypeScript
+- [ ] Default widths
+- [ ] Constraints for each panel (min & max widths)
+- [ ] Customizable drag handle styles
+- [ ] Touch support
+
+## Contributions:
+
+All contributions are welcome through PRs

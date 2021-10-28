@@ -18,7 +18,8 @@ export const ContainerWrapper = styled("div", {
 
 export const PanelWrapper = styled("div", {
   position: "relative",
-  flex: "auto"
+  flex: "auto",
+  display: "flex"
 });
 
 export const DragHandle = styled("div", {
