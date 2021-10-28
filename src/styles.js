@@ -1,13 +1,12 @@
 import { styled } from "@stitches/react";
 
-export const Wrapper = styled("div", {
-  height: "90vh",
-  width: "90vw",
-  background: "rgb(66 69 86)",
-  padding: "1rem",
+export const ContainerWrapper = styled("div", {
+  height: "100%",
+  width: "100%",
   position: "relative",
   display: "flex",
   justifyContent: "space-between",
+  alignItems: "stretch",
   variants: {
     active: {
       true: {
@@ -17,39 +16,32 @@ export const Wrapper = styled("div", {
   }
 });
 
-export const ResizablePanelStyle = styled("div", {
+export const PanelWrapper = styled("div", {
   position: "relative",
-  height: "90%",
-  width: "100%",
-  background: "rgb(47 49 56)",
-  border: "1px solid #777bd5",
-  color: "white",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "1rem",
-  flexDirection: "column"
+  flex: "auto"
 });
 
 export const DragHandle = styled("div", {
   position: "relative",
-  height: "100%",
+  flex: "auto",
   "&:after": {
     content: "",
     position: "absolute",
     top: 0,
     bottom: 0,
-    left: "-3px",
-    width: "6px",
-    background: "transparent",
+    left: "-1px",
+    width: "2px",
+    background: "#d5ce0a44",
     cursor: "col-resize",
     transiton: "all 50ms",
-    zIndex: 100
+    zIndex: 100000
   },
 
   "&:hover": {
     "&:after": {
-      background: "green"
+      left: "-3px",
+      width: "6px",
+      background: "#d5ce0a75"
     }
   },
 
@@ -57,7 +49,9 @@ export const DragHandle = styled("div", {
     active: {
       true: {
         "&:after": {
-          background: "red !important"
+          left: "-3px",
+          width: "6px",
+          background: "#d5ce0a !important"
         }
       }
     }

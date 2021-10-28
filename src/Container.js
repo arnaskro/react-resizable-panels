@@ -1,99 +1,52 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { Wrapper, DragHandle } from "./styles";
-import ResizablePanel from "./ResizablePanel";
-import { v4 as uuid } from "uuid";
+import React from "react";
+import { ContainerWrapper, DragHandle } from "./styles";
+import Panel from "./Panel";
+import useContainerState from "./Container.state";
 
-const initialWidths = { box1: 0, box2: 0, box3: 100 };
+function Container({ children = [], minWidth = 50 }) {
+  const {
+    panelKeys,
+    handleKeys,
+    onMouseDown,
+    activeHandle,
+    widths,
+    setWidths
+  } = useContainerState({ children, minWidth });
 
-function Container({ children }) {
-  const [state, setState] = useState(initialWidths);
-  const [activeHandle, setActiveHandle] = useState();
-  const { panelKeys, handleKeys } = useMemo(() => {
-    return {
-      panelKeys: new Array(children.length).fill(null).map(() => uuid()),
-      handleKeys:
-        children.length > 1
-          ? new Array(children.length - 1).fill(null).map(() => uuid())
-          : []
-    };
-  }, [children.length]);
+  const content = !Array.isArray(children)
+    ? children
+    : children.map((el, i) => {
+        const key = panelKeys[i];
+        const panel = (
+          <Panel
+            key={key}
+            width={widths[key]}
+            setInitialWidth={(width) =>
+              setWidths((all) => ({ ...all, [key]: width }))
+            }
+          >
+            {el}
+          </Panel>
+        );
 
-  const onMouseDown = useCallback(
-    ([key1, key2], handleKey) => () => {
-      setActiveHandle(handleKey);
-      const onMove = (e) => {
-        const { movementX } = e;
-        const minWidth = 150;
+        if (i >= 0 && i < children.length - 1) {
+          const handleKey = handleKeys[i];
+          const rightPanelKey = panelKeys[i + 1];
+          const handle = (
+            <DragHandle
+              key={handleKey}
+              active={activeHandle === handleKey}
+              onMouseDown={onMouseDown([key, rightPanelKey], handleKey)}
+            />
+          );
 
-        setState((x) => {
-          // get new sizes
-          const firstWidth = x[key1] + movementX;
-          const scndWidth = x[key2] - movementX;
-
-          // check constraints
-          if (
-            (firstWidth < minWidth && firstWidth < x[key1]) ||
-            (scndWidth < minWidth && scndWidth < x[key2])
-          ) {
-            return x;
-          }
-
-          return {
-            ...x,
-            [key1]: firstWidth,
-            [key2]: scndWidth
-          };
-        });
-      };
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", () => {
-        window.removeEventListener("mousemove", onMove);
-        setActiveHandle();
-      });
-    },
-    [setState, setActiveHandle]
-  );
-
-  useEffect(() => {
-    const handleResize = () => setState(initialWidths);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [setState]);
-
-  const content = children.map((el, i) => {
-    const key = panelKeys[i];
-    const panel = (
-      <ResizablePanel
-        key={key}
-        setInitialWidth={(newWidth) =>
-          setState((state) => ({ ...state, [key]: newWidth }))
+          return [panel, handle];
         }
-        width={state[key]}
-      >
-        {el}
-      </ResizablePanel>
-    );
 
-    if (i >= 0 && i < children.length - 1) {
-      const handleKey = handleKeys[i];
-      const rightPanelKey = panelKeys[i + 1];
-      const handle = (
-        <DragHandle
-          key={handleKey}
-          active={activeHandle === handleKey}
-          onMouseDown={onMouseDown([key, rightPanelKey], handleKey)}
-        />
-      );
+        return panel;
+      });
 
-      return [panel, handle];
-    }
-
-    return panel;
-  });
-
-  return <Wrapper active={!!activeHandle}>{content}</Wrapper>;
+  return <ContainerWrapper active={!!activeHandle}>{content}</ContainerWrapper>;
 }
 
 export default Container;
